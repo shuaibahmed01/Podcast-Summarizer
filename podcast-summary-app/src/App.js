@@ -16,8 +16,27 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: Implement API call to backend for processing
-    console.log('Submitting:', { audioFile, email });
+    
+    const formData = new FormData();
+    formData.append('audio', audioFile);
+    formData.append('email', email);
+
+    try {
+      const response = await fetch('http://localhost:3001/process-audio', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process audio');
+      }
+
+      const data = await response.json();
+      setSummary(data.summary);
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   return (
