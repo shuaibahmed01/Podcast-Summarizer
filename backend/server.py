@@ -10,6 +10,7 @@ from langchain_core.prompts import PromptTemplate
 from transcription_service import TranscriptionService
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnablePassthrough
+from langchain.chains import LLMChain
 
 load_dotenv()
 
@@ -44,16 +45,13 @@ prompt = PromptTemplate(
 )
 
 def get_session_history():
-    return ChatMessageHistory()
+    return ConversationBufferMemory(memory_key="history", input_key="transcript")
 
-chain = RunnableWithMessageHistory(
-    runnable=RunnablePassthrough.assign(
-        response=prompt | model
-    ),
-    get_session_history=get_session_history,
-    memory_key="history",
-    input_key="transcript",
-    output_key="response"
+chain = LLMChain(
+    llm=model,
+    prompt=prompt,
+    memory=get_session_history(),
+    verbose=True
 )
 
 @app.route('/process-audio', methods=['POST'])
@@ -64,22 +62,25 @@ def process_audio():
 
         audio_file = request.files['audio']
         email = request.form.get('email')
-
+        print(audio_file.filename)
         if audio_file.filename == '':
             return jsonify({'error': 'No selected file'}), 400
 
         if audio_file:
-            filename = secure_filename(audio_file.filename)
+            filename = audio_file.filename
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             audio_file.save(filepath)
 
             # 1. Transcribe the audio file
             transcription_service = TranscriptionService(os.getenv('OPENAI_API_KEY'))
+
             transcript = transcription_service.transcribe(filepath)
+
+            print(transcript)
 
             # 2. Generate a summary using the Langchain agent
             response = chain.run(transcript=transcript)
-
+            print('4')
             # 3. Send the summary back to the client
             summary = {'content': response}
 

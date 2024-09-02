@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import PodcastSummary from './PodcastSummary'; // Add this import
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
@@ -67,12 +68,7 @@ function App() {
         </div>
         <button type="submit">Generate Summary</button>
       </form>
-      {summary && (
-        <div className="summary">
-          <h2>Podcast Summary</h2>
-          <pre>{summary.content}</pre>
-        </div>
-      )}
+      {summary && <PodcastSummary summary={summary} />}
     </div>
   );
 }

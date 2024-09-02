@@ -1,0 +1,27 @@
+.podcast-summary {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.podcast-summary h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.summary-content {
+  text-align: left;
+  line-height: 1.6;
+}
+
+.summary-content h3 {
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.summary-content p {
+  margin-bottom: 10px;
+}
