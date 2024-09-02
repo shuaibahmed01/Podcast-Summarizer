@@ -22,7 +22,7 @@ function App() {
     formData.append('email', email);
 
     try {
-      const response = await fetch('http://localhost:3001/process-audio', {
+      const response = await fetch('http://localhost:5001/process-audio', {
         method: 'POST',
         body: formData,
       });
@@ -69,19 +69,8 @@ function App() {
       </form>
       {summary && (
         <div className="summary">
-          <h2>{summary.title}</h2>
-          <h3>Main Points</h3>
-          <ul>
-            {summary.mainPoints.map((point, index) => (
-              <li key={index}>{point}</li>
-            ))}
-          </ul>
-          <h3>Cool Points</h3>
-          <ul>
-            {summary.coolPoints.map((point, index) => (
-              <li key={index}>{point}</li>
-            ))}
-          </ul>
+          <h2>Podcast Summary</h2>
+          <pre>{summary.content}</pre>
         </div>
       )}
     </div>
