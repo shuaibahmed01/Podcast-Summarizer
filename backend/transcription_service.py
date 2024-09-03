@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 import os
 from pyannote.audio import Pipeline
 import torch
+import torchaudio
+from pyannote.audio.pipelines.utils.hook import ProgressHook
+from pydub import AudioSegment
+
 class TranscriptionService:
     def __init__(self):
         load_dotenv()
@@ -26,8 +30,14 @@ class TranscriptionService:
         )
         return response.text
 
+
     def diarize(self, file_path):
-        diarization = self.diarization_pipeline(file_path)
+        audio = AudioSegment.from_file(file_path)
+        audio = audio.set_frame_rate(16000)
+        audio.export("/Users/shuaibahmed/Downloads/processed_audio.wav", format="wav")
+        
+        with ProgressHook() as hook:
+            diarization = self.diarization_pipelinepipeline("/Users/shuaibahmed/Downloads/processed_audio.wav", hook=hook)
         return diarization
 
     def transcribe_and_diarize(self, file_path):

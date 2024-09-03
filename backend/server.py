@@ -12,6 +12,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import LLMChain
 
+
 load_dotenv()
 
 app = Flask(__name__)
