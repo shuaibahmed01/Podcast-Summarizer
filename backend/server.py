@@ -26,15 +26,16 @@ template = """
 You are an AI assistant that creates structured reports/summaries of podcasts. 
 A user should completely understand what the podcast was about and any important information from the report you generate.
 
-Given the following podcast transcript, please provide a comprehensive summary including:
+Given the following diarized podcast transcript, please provide a comprehensive summary including:
 1. Title of the podcast (if discernible)
 2. Main topic
 3. Key points (bullet points)
-  - Feel free to have the key points be headers under which you eloborate a bit more on the key points, if you feel it is fit to do so
+  - Feel free to have the key points be headers under which you elaborate a bit more on the key points, if you feel it is fit to do so
 4. Interesting facts or insights
 5. Conclusion or takeaways
+6. Brief overview of the speakers and their main contributions to the discussion
 
-Podcast transcript:
+Diarized podcast transcript:
 {transcript}
 
 Please structure your response in a clear, easy-to-read format.
@@ -72,16 +73,20 @@ def process_audio():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             audio_file.save(filepath)
 
-            # 1. Transcribe the audio file
-            transcription_service = TranscriptionService(os.getenv('OPENAI_API_KEY'))
+            # 1. Transcribe and diarize the audio file
+            transcription_service = TranscriptionService()
+            diarized_transcript = transcription_service.transcribe_and_diarize(filepath)
 
-            transcript = transcription_service.transcribe(filepath)
+            # Process the diarized transcript
+            formatted_transcript = ""
+            for segment in diarized_transcript:
+                formatted_transcript += f"\nSpeaker {segment['speaker']}: {segment['text']}"
 
-            print(transcript)
+            print(formatted_transcript)
 
             # 2. Generate a summary using the Langchain agent
-            response = chain.run(transcript=transcript)
-            print('4')
+            response = chain.run(transcript=formatted_transcript)
+
             # 3. Send the summary back to the client
             summary = {'content': response}
 
