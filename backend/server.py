@@ -30,6 +30,7 @@ Given the following podcast transcript, please provide a comprehensive summary i
 1. Title of the podcast (if discernible)
 2. Main topic
 3. Key points (bullet points)
+  - Feel free to have the key points be headers under which you eloborate a bit more on the key points, if you feel it is fit to do so
 4. Interesting facts or insights
 5. Conclusion or takeaways
 
