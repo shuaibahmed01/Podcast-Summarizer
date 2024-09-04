@@ -32,12 +32,32 @@ class TranscriptionService:
 
 
     def diarize(self, file_path):
+        print("diarize step 1")
         audio = AudioSegment.from_file(file_path)
+        print("file segmentation complete")
         audio = audio.set_frame_rate(16000)
         audio.export("/Users/shuaibahmed/Downloads/processed_audio.wav", format="wav")
+        # Use torchaudio instead of pydub for faster processing
+        waveform, sample_rate = torchaudio.load("/Users/shuaibahmed/Downloads/processed_audio.wav")
+        
+        # Resample to 16kHz if necessary
+        if sample_rate != 16000:
+            resampler = torchaudio.transforms.Resample(sample_rate, 16000)
+            waveform = resampler(waveform)
+        
+        # Convert to mono if stereo
+        if waveform.shape[0] > 1:
+            waveform = torch.mean(waveform, dim=0, keepdim=True)
+        
+        print("Audio preprocessing complete")
+        
+        # Use CUDA if available
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.diarization_pipeline.to(device)
         
         with ProgressHook() as hook:
-            diarization = self.diarization_pipelinepipeline("/Users/shuaibahmed/Downloads/processed_audio.wav", hook=hook)
+            diarization = self.diarization_pipeline({"waveform": waveform, "sample_rate": 16000}, hook=hook)
+        
         return diarization
 
     def transcribe_and_diarize(self, file_path):
@@ -45,6 +65,9 @@ class TranscriptionService:
         print('1')
         diarization = self.diarize(file_path)
         print('2')
+        
+
+
         # Combine transcription and diarization
         diarized_transcript = []
         print('3')
