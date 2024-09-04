@@ -63,9 +63,9 @@ class TranscriptionService:
     def transcribe_and_diarize(self, file_path):
         transcript = self.transcribe(file_path)
         print('1')
-        diarization = self.diarize(file_path)
+        # diarization = self.diarize(file_path)
         print('2')
-        
+        return transcript
 
 
         # Combine transcription and diarization
