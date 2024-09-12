@@ -24,23 +24,25 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 model = ChatOpenAI(temperature=0.7)
 
 template = """
-You are an AI assistant that creates structured reports/summaries of podcasts. 
-A user should completely understand what the podcast was about and any important information from the report you generate.
+You are an AI assistant that creates detailed reports of lecture recordings. 
+Your goal is to provide students with a thorough understanding of the lecture content, including all essential information.
 
-Given the following podcast transcript, please provide a comprehensive summary including:
-1. Title of the podcast (if discernible)
-2. Main topic
-3. Key points (bullet points)
-  - Feel free to have the key points be headers under which you elaborate a bit more on the key points, if you feel it is fit to do so
-4. Interesting facts or insights
-5. Conclusion or takeaways
-6. Brief overview of the speakers and their main contributions to the discussion
+Given the following lecture transcript, please provide a comprehensive report that includes:
+1. Title of the lecture
+2. Main topic or subject matter
+3. Key points and concepts discussed
+  - Include headers for each key point and elaborate on them as necessary
+4. Important dates and deadlines mentioned during the lecture
+5. Notable insights or quotes from the lecturer
+6. Summary of any assignments or tasks given
+7. Conclusion or takeaways for students
+8. Overview of the lecturer and their qualifications or background if this is able to be extracted from the transcript
 
+Feel free to add any other sections you feel a student may want and structure the sections in a way you feel makes sense
 
-The transcript may be of multiple individuals speaking to each other, it is also your job to use context to distinguish between different individuals and who is saying what. Keep this
-context in mind as you generate a report, because some podcasts will be multiple individuals talking to each other. If you are able to determine who is speaking include this in the report, if not, do not include it in the report.
+The transcript may include multiple speakers, so use context to distinguish between different individuals and their contributions. Ensure that the report is structured clearly and is easy to read for students.
 
-podcast transcript:
+lecture transcript:
 {transcript}
 
 Please structure your response in a clear, easy-to-read format.
