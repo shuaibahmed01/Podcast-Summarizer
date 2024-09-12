@@ -74,12 +74,14 @@ def process_audio():
             return jsonify({'error': 'No selected file'}), 400
 
         if audio_file:
+            print('here')
             filename = audio_file.filename
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             audio_file.save(filepath)
 
             # 1. Transcribe and diarize the audio file
             transcription_service = TranscriptionService()
+            print('here 2')
             transcript = transcription_service.transcribe_and_diarize(filepath)
 
 

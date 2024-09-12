@@ -8,8 +8,6 @@ class TranscriptionService:
         self.openai_api_key = os.getenv('OPENAI_API_KEY')
         if not self.openai_api_key:
             raise ValueError("No OpenAI API key found in environment variables")
-        if not self.hf_token:
-            raise ValueError("No Hugging Face token found in environment variables")
         self.client = OpenAI(api_key=self.openai_api_key)
         
 
@@ -24,6 +22,7 @@ class TranscriptionService:
 
 
     def transcribe_and_diarize(self, file_path):
+        print('0')
         transcript = self.transcribe(file_path)
         print('1')
         # diarization = self.diarize(file_path)
