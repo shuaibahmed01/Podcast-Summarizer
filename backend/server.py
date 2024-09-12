@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import PromptTemplate
-from transcription_service import TranscriptionService
+from transcription_service import ChunkedTranscriptionService
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import LLMChain
@@ -82,7 +82,7 @@ def process_audio():
             audio_file.save(filepath)
 
             # 1. Transcribe and diarize the audio file
-            transcription_service = TranscriptionService()
+            transcription_service = ChunkedTranscriptionService()
             print('here 2')
             transcript = transcription_service.transcribe_and_diarize(filepath)
 
