@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import PodcastSummary from './PodcastSummary'; // Add this import
+import PodcastSummary from './PodcastSummary';
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
@@ -42,33 +42,36 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Podcast Summary Generator</h1>
-      <h2 className='slogan'>Get Important Info, Save Time</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="audio-file">Upload Podcast Audio</label>
-          <input
-            type="file"
-            id="audio-file"
-            accept="audio/*"
-            onChange={handleFileChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={handleEmailChange}
-            required
-            placeholder="Enter your email"
-          />
-        </div>
-        <button type="submit">Generate Summary</button>
-      </form>
-      {summary && <PodcastSummary summary={summary} />}
+      <div className="dynamic-background"></div>
+      <div className="content">
+        <h1>Podcast Summary Generator</h1>
+        <p className="slogan">Get Important Info, Save Time</p>
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="audio-file">Upload Podcast Audio</label>
+            <input
+              type="file"
+              id="audio-file"
+              accept="audio/*"
+              onChange={handleFileChange}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <button type="submit">Generate Summary</button>
+        </form>
+        {summary && <PodcastSummary summary={summary} />}
+      </div>
     </div>
   );
 }

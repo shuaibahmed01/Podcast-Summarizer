@@ -1,116 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #00ffb3;
+  --secondary-color: #00b8ff;
+  --accent-color: #ff00ff;
+  --input-bg: #2c2c2c;
+  --input-border: #3d3d3d;
+  --bg-gradient-1: #000000;
+  --bg-gradient-2: #1a1a1a;
+  --bg-gradient-3: #000000;
+  --primary-color-rgb: 0, 255, 179;
+  --secondary-color-rgb: 0, 184, 255;
+  --accent-color-rgb: 255, 0, 255;
+  --text-color-rgb: 255, 255, 255;
+  --bg-color-rgb: 18, 18, 18;
+  --input-bg-rgb: 44, 44, 44;
+}
+
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.App {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
-.App {
-  max-width: 800px;
-  width: 90%;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+.dynamic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: linear-gradient(45deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
 }
 
-h1 {
-  color: #4a4a4a;
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2.5rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  margin-bottom: 40px;
-}
-
-.slogan {
-  font-style: italic;
-  color: #666;
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  letter-spacing: 0.5px;
-  text-align: center;
-}
-
-label {
-  font-weight: 600;
-  color: #4a4a4a;
-  margin-bottom: 5px;
-  display: block;
-}
-
-input[type="file"],
-input[type="email"] {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-input[type="file"]:focus,
-input[type="email"]:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-button {
-  padding: 12px 24px;
-  background-color: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.1s ease;
-}
-
-button:hover {
-  background-color: #5a6fd6;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-.summary {
-  background-color: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.summary h2 {
-  color: #667eea;
-  margin-top: 0;
-}
-
-.summary h3 {
-  color: #4a4a4a;
-  margin-top: 20px;
-}
-
-.summary ul {
-  padding-left: 20px;
-  color: #666;
-}
-
-.summary li {
-  margin-bottom: 10px;
-}
-
-@keyframes gradientAnimation {
+@keyframes gradientFlow {
   0% {
     background-position: 0% 50%;
   }
@@ -122,7 +62,140 @@ button:active {
   }
 }
 
-body {
-  background-size: 400% 400%;
-  animation: gradientAnimation 15s ease infinite;
+.content {
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  padding: 40px;
+}
+
+h1 {
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 3.5rem;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+
+.slogan {
+  font-style: italic;
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 300;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 40px;
+  width: 100%;
+  align-items: center;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+label {
+  font-weight: 600;
+  color: var(--secondary-color); /* Changed from var(--accent-color) to var(--secondary-color) */
+  font-size: 1.1rem;
+}
+
+input[type="file"],
+input[type="email"] {
+  width: 100%;
+  padding: 15px;
+  background-color: rgba(var(--input-bg-rgb), 0.3);
+  border: 2px solid rgba(var(--text-color-rgb), 0.3);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+input[type="file"]:focus,
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.3);
+}
+
+button {
+  padding: 15px 30px;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  max-width: 100%;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.summary {
+  background-color: rgba(var(--input-bg-rgb), 0.1);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.summary h2 {
+  color: var(--primary-color);
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.summary h3 {
+  color: var(--secondary-color);
+  margin-top: 30px;
+  font-size: 1.5rem;
+}
+
+.summary ul {
+  padding-left: 20px;
+  color: var(--text-color);
+}
+
+.summary li {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .slogan {
+    font-size: 1.2rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
 }
