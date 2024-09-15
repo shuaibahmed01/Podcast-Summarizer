@@ -5,13 +5,13 @@ import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import PromptTemplate
 from transcription_service import ChunkedTranscriptionService
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import LLMChain
-
+from visualization_service import generate_visualizations
+import threading
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ The transcript may include multiple speakers, so use context to distinguish betw
 lecture transcript:
 {transcript}
 
-Please structure your response in a clear, easy-to-read format.
+Please structure your response in a clear, easy-to-read format using HTML tags for formatting. Use <h1> for the title, <h2> for main sections, <h3> for subsections, <p> for paragraphs, <ul> or <ol> for lists, and <blockquote> for quotes.
 """
 
 prompt = PromptTemplate(
@@ -63,43 +63,47 @@ chain = LLMChain(
     verbose=True
 )
 
+def process_audio_task(audio_file, email):
+    try:
+        filename = secure_filename(audio_file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        audio_file.save(filepath)
+
+        # 1. Transcribe and diarize the audio file
+        transcription_service = ChunkedTranscriptionService()
+        transcript = transcription_service.transcribe_and_diarize(filepath)
+
+        # 2. Generate a summary using the Langchain agent
+        response = chain.run(transcript=transcript)
+
+        # 3. Generate visualizations
+        visualizations = generate_visualizations(transcript, response)
+
+        # 4. Clean up the uploaded file
+        os.remove(filepath)
+
+        return {'summary': {'content': response}, 'visualizations': visualizations}
+    except Exception as e:
+        return {'error': str(e)}
+
 @app.route('/process-audio', methods=['POST'])
 def process_audio():
-    try:
-        if 'audio' not in request.files:
-            return jsonify({'error': 'No audio file provided'}), 400
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No audio file provided'}), 400
 
-        audio_file = request.files['audio']
-        email = request.form.get('email')
-        print(audio_file.filename)
-        if audio_file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
+    audio_file = request.files['audio']
+    email = request.form.get('email')
+    
+    if audio_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
-        if audio_file:
-            print('here')
-            filename = audio_file.filename
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            audio_file.save(filepath)
+    # Process the audio in the main thread
+    result = process_audio_task(audio_file, email)
 
-            # 1. Transcribe and diarize the audio file
-            transcription_service = ChunkedTranscriptionService()
-            print('here 2')
-            transcript = transcription_service.transcribe_and_diarize(filepath)
+    if 'error' in result:
+        return jsonify({'error': result['error']}), 500
 
-
-            # 2. Generate a summary using the Langchain agent
-            response = chain.run(transcript=transcript)
-
-            # 3. Send the summary back to the client
-            summary = {'content': response}
-
-            # 4. Clean up the uploaded file
-            os.remove(filepath)
-
-            return jsonify({'summary': summary})
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=5001, debug=True, threaded=False)

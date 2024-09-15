@@ -6,6 +6,7 @@ function App() {
   const [audioFile, setAudioFile] = useState(null);
   const [email, setEmail] = useState('');
   const [summary, setSummary] = useState(null);
+  const [visualizations, setVisualizations] = useState([]);
 
   const handleFileChange = (event) => {
     setAudioFile(event.target.files[0]);
@@ -34,6 +35,7 @@ function App() {
 
       const data = await response.json();
       setSummary(data.summary);
+      setVisualizations(data.visualizations || []);
     } catch (error) {
       console.error('Error:', error);
       // Handle error (e.g., show error message to user)
@@ -70,7 +72,12 @@ function App() {
           </div>
           <button type="submit">Generate Summary</button>
         </form>
-        {summary && <PodcastSummary summary={summary} />}
+        {summary && (
+          <PodcastSummary 
+            summary={summary} 
+            visualizations={visualizations} 
+          />
+        )}
       </div>
     </div>
   );
