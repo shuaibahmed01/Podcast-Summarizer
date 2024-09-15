@@ -19,8 +19,7 @@ def generate_visualizations(transcript, summary):
     topics = extract_topics(summary)
     visualizations.append(create_topic_distribution_chart(topics))
     
-    # 3. Word cloud
-    visualizations.append(create_word_cloud(transcript))
+
     
     return visualizations
 
@@ -32,40 +31,33 @@ def get_word_frequency(text):
 
 def create_word_frequency_chart(word_freq):
     words, counts = zip(*word_freq)
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(8, 5))  # Reduced size and DPI
     plt.bar(words, counts)
-    plt.title('Top 10 Most Frequent Words')
-    plt.xlabel('Words')
-    plt.ylabel('Frequency')
-    plt.xticks(rotation=45, ha='right')
+    plt.title('Top 10 Most Frequent Words', fontsize=10)
+    plt.xlabel('Words', fontsize=8)
+    plt.ylabel('Frequency', fontsize=8)
+    plt.xticks(rotation=45, ha='right', fontsize=6)
+    plt.yticks(fontsize=6)
+    plt.tight_layout()
     
     return save_plot_to_base64('Word Frequency Chart', 'Shows the most frequently used words in the podcast.')
 
 def extract_topics(summary):
-    # This is a simple implementation. In a real-world scenario, you might want to use
-    # more advanced NLP techniques like topic modeling (e.g., LDA)
     topics = re.findall(r'(?<=\n)[^:\n]+(?=:)', summary)
     return Counter(topics)
 
 def create_topic_distribution_chart(topics):
-    plt.figure(figsize=(10, 10))
-    plt.pie(topics.values(), labels=topics.keys(), autopct='%1.1f%%', startangle=90)
-    plt.title('Topic Distribution')
+    plt.figure(figsize=(8,8))  # Reduced size and DPI
+    plt.pie(topics.values(), labels=topics.keys(), autopct='%1.1f%%', startangle=90, textprops={'fontsize': 6})
+    plt.title('Topic Distribution', fontsize=10)
+    plt.tight_layout()
     
     return save_plot_to_base64('Topic Distribution', 'Shows the distribution of main topics discussed in the podcast.')
 
-def create_word_cloud(text):
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    plt.title('Word Cloud')
-    
-    return save_plot_to_base64('Word Cloud', 'Visual representation of the most prominent words in the podcast.')
 
 def save_plot_to_base64(title, description):
     buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight')
+    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
     buffer.seek(0)
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     plt.close()
