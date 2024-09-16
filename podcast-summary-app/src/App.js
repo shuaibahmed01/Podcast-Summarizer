@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
 import PodcastSummary from './PodcastSummary';
+import { MermaidChart } from './MermaidChart';
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
   const [email, setEmail] = useState('');
   const [summary, setSummary] = useState(null);
+  // eslint-disable-next-line
   const [visualizations, setVisualizations] = useState([]);
 
   const handleFileChange = (event) => {
@@ -38,7 +40,7 @@ function App() {
       setVisualizations(data.visualizations || []);
     } catch (error) {
       console.error('Error:', error);
-      // Handle error (e.g., show error message to user)
+      
     }
   };
 
@@ -75,7 +77,7 @@ function App() {
         {summary && (
           <PodcastSummary 
             summary={summary} 
-            visualizations={visualizations} 
+            visualizations={visualizations}
           />
         )}
       </div>

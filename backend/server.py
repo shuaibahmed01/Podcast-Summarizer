@@ -76,7 +76,7 @@ def process_audio_task(audio_file, email):
         # 2. Generate a summary using the Langchain agent
         response = chain.run(transcript=transcript)
 
-        # 3. Generate visualizations
+        # 3. Generate visualizations using the new dynamic agent
         visualizations = generate_visualizations(transcript, response)
 
         # 4. Clean up the uploaded file
