@@ -95,7 +95,9 @@ form {
   gap: 30px;
   margin-bottom: 40px;
   width: 100%;
-  align-items: center;
+  max-width: 600px; /* Add a max-width to the form */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .input-group {
@@ -114,6 +116,7 @@ label {
 input[type="file"],
 input[type="email"] {
   width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in width */
   padding: 15px;
   background-color: rgba(var(--input-bg-rgb), 0.3);
   border: 2px solid rgba(var(--text-color-rgb), 0.3);
@@ -131,6 +134,8 @@ input[type="email"]:focus {
 }
 
 button {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in width */
   padding: 15px 30px;
   background-color: var(--primary-color);
   color: var(--bg-color);
@@ -142,8 +147,6 @@ button {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  width: 100%;
-  max-width: 100%;
 }
 
 button:hover {
@@ -198,4 +201,39 @@ button:active {
   button {
     font-size: 1rem;
   }
+}
+
+.progress-bar-container {
+  width: 100%;
+  box-sizing: border-box; /* Ensure padding is included in width */
+  background-color: #f0f0f0;
+  border-radius: 20px; /* Reduced from 40px */
+  margin-top: 20px;
+  overflow: visible;
+  min-height: 10px; /* Reduced from 15px */
+  position: relative;
+  padding: 2px 0; /* Reduced from 5px */
+  align-self: stretch; /* Added to ensure it stretches to full width */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  transition: width 0.5s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 20px; /* Reduced from 40px */
+}
+
+.progress-text {
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+  color: #000000;
+  z-index: 1;
+  width: 100%;
+  padding: 1px 0; /* Reduced from 2px */
+  line-height: 1;
+  font-size: 0.8rem; /* Reduced from 0.9rem */
 }

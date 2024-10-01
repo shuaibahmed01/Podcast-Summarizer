@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
@@ -8,7 +8,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import PromptTemplate
 from transcription_service import ChunkedTranscriptionService
 from langchain.chains import LLMChain
-
+import json
 load_dotenv()
 
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -72,11 +72,17 @@ def process_audio_task(audio_file, email):
         transcription_service = ChunkedTranscriptionService()
         transcript = transcription_service.transcribe_and_diarize(filepath)
 
-        response = chain.run(transcript=transcript)
+        def generate():
+            yield 'data: {"progress": 50}\n\n'  # Transcription complete
+
+            response = chain.run(transcript=transcript)
+
+            yield 'data: {"progress": 100}\n\n'  # Summary generation complete
+            yield f'data: {{"summary": {json.dumps(response)}}}\n\n'
 
         os.remove(filepath)
 
-        return {'summary': {'content': response}}
+        return Response(generate(), content_type='text/event-stream')
     except Exception as e:
         return {'error': str(e)}
 
@@ -91,12 +97,7 @@ def process_audio():
     if audio_file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    result = process_audio_task(audio_file, email)
-
-    if 'error' in result:
-        return jsonify({'error': result['error']}), 500
-
-    return jsonify(result)
+    return process_audio_task(audio_file, email)
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
