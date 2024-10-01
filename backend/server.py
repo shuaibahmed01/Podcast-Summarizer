@@ -3,7 +3,7 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import PromptTemplate
 from transcription_service import ChunkedTranscriptionService
@@ -11,13 +11,17 @@ from langchain.chains import LLMChain
 
 load_dotenv()
 
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+
 app = Flask(__name__)
 CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-model = ChatOpenAI(temperature=0.7)
+model = ChatAnthropic(model="claude-3-5-sonnet-20240620",
+                    temperature=0.7, 
+                    anthropic_api_key=anthropic_api_key)
 
 template = """
 You are an AI assistant that creates detailed reports of lecture recordings. 
@@ -65,14 +69,11 @@ def process_audio_task(audio_file, email):
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         audio_file.save(filepath)
 
-        
         transcription_service = ChunkedTranscriptionService()
         transcript = transcription_service.transcribe_and_diarize(filepath)
 
-        
         response = chain.run(transcript=transcript)
 
-       
         os.remove(filepath)
 
         return {'summary': {'content': response}}
@@ -90,7 +91,6 @@ def process_audio():
     if audio_file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
-    # Process the audio in the main thread
     result = process_audio_task(audio_file, email)
 
     if 'error' in result:
@@ -99,4 +99,4 @@ def process_audio():
     return jsonify(result)
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True, threaded=False)
+    app.run(port=5001, debug=True)

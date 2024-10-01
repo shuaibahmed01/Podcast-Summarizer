@@ -7,6 +7,7 @@ function App() {
   const [audioFile, setAudioFile] = useState(null);
   const [email, setEmail] = useState('');
   const [summary, setSummary] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   // eslint-disable-next-line
   const [visualizations, setVisualizations] = useState([]);
 
@@ -20,6 +21,7 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     
     const formData = new FormData();
     formData.append('audio', audioFile);
@@ -40,7 +42,8 @@ function App() {
       setVisualizations(data.visualizations || []);
     } catch (error) {
       console.error('Error:', error);
-      
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,11 +51,11 @@ function App() {
     <div className="App">
       <div className="dynamic-background"></div>
       <div className="content">
-        <h1>Podcast Summary Generator</h1>
+        <h1>Lecture Report Generator</h1>
         <p className="slogan">Get Important Info, Save Time</p>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="audio-file">Upload Podcast Audio</label>
+            <label htmlFor="audio-file">Upload Lecture Audio</label>
             <input
               type="file"
               id="audio-file"
@@ -72,11 +75,13 @@ function App() {
               placeholder="Enter your email"
             />
           </div>
-          <button type="submit">Generate Summary</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Generating Summary...' : 'Generate Summary'}
+          </button>
         </form>
         {summary && (
           <PodcastSummary 
-            summary={summary} 
+            summary={summary.content} 
             visualizations={visualizations}
           />
         )}
