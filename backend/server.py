@@ -77,9 +77,30 @@ def send_email(receiver_email, summary):
 
     body = f"""
     <html>
+    <head>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333333;
+            }}
+            .container {{
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                text-align: center;
+            }}
+            h1, h2, h3 {{
+                color: #2c3e50;
+            }}
+        </style>
+    </head>
     <body>
-    <h2>Here's your lecture summary:</h2>
-    {summary}
+        <div class="container">
+            <h1>Your Lecture Summary</h1>
+            {summary}
+        </div>
     </body>
     </html>
     """
