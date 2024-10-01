@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import PodcastSummary from './PodcastSummary';
-import { MermaidChart } from './MermaidChart';
+
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
