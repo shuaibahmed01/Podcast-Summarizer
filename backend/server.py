@@ -7,11 +7,7 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import PromptTemplate
 from transcription_service import ChunkedTranscriptionService
-from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import LLMChain
-from visualization_service import generate_visualizations
-import threading
 
 load_dotenv()
 
@@ -69,20 +65,17 @@ def process_audio_task(audio_file, email):
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         audio_file.save(filepath)
 
-        # 1. Transcribe and diarize the audio file
+        
         transcription_service = ChunkedTranscriptionService()
         transcript = transcription_service.transcribe_and_diarize(filepath)
 
-        # 2. Generate a summary using the Langchain agent
+        
         response = chain.run(transcript=transcript)
 
-        # 3. Generate visualizations using the new dynamic agent
-        visualizations = generate_visualizations(transcript, response)
-
-        # 4. Clean up the uploaded file
+       
         os.remove(filepath)
 
-        return {'summary': {'content': response}, 'visualizations': visualizations}
+        return {'summary': {'content': response}}
     except Exception as e:
         return {'error': str(e)}
 
