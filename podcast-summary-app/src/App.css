@@ -205,15 +205,15 @@ button:active {
 
 .progress-bar-container {
   width: 100%;
-  box-sizing: border-box; /* Ensure padding is included in width */
+  box-sizing: border-box; 
   background-color: #f0f0f0;
-  border-radius: 20px; /* Reduced from 40px */
+  border-radius: 20px; 
   margin-top: 20px;
   overflow: visible;
-  min-height: 10px; /* Reduced from 15px */
+  min-height: 10px; 
   position: relative;
-  padding: 2px 0; /* Reduced from 5px */
-  align-self: stretch; /* Added to ensure it stretches to full width */
+  padding: 2px 0; 
+  align-self: stretch; 
 }
 
 .progress-bar {
@@ -223,7 +223,7 @@ button:active {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 20px; /* Reduced from 40px */
+  border-radius: 20px; 
 }
 
 .progress-text {
@@ -233,7 +233,7 @@ button:active {
   color: #000000;
   z-index: 1;
   width: 100%;
-  padding: 1px 0; /* Reduced from 2px */
+  padding: 1px 0; 
   line-height: 1;
-  font-size: 0.8rem; /* Reduced from 0.9rem */
+  font-size: 0.8rem;
 }

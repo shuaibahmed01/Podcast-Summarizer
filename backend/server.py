@@ -9,9 +9,15 @@ from langchain_core.prompts import PromptTemplate
 from transcription_service import ChunkedTranscriptionService
 from langchain.chains import LLMChain
 import json
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+
 load_dotenv()
 
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+email_password = os.getenv("EMAIL_PASSWORD")
+sender_email = os.getenv("SENDER_EMAIL")
 
 app = Flask(__name__)
 CORS(app)
@@ -63,6 +69,31 @@ chain = LLMChain(
     verbose=True
 )
 
+def send_email(receiver_email, summary):
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = "New Lecture Report Available!"
+
+    body = f"""
+    <html>
+    <body>
+    <h2>Here's your lecture summary:</h2>
+    {summary}
+    </body>
+    </html>
+    """
+    msg.attach(MIMEText(body, 'html'))
+
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, email_password)
+            server.send_message(msg)
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Error sending email: {str(e)}")
+
 def process_audio_task(audio_file, email):
     try:
         filename = secure_filename(audio_file.filename)
@@ -77,7 +108,12 @@ def process_audio_task(audio_file, email):
 
             response = chain.run(transcript=transcript)
 
-            yield 'data: {"progress": 100}\n\n'  # Summary generation complete
+            yield 'data: {"progress": 90}\n\n'  # Summary generation complete
+
+            # Send email
+            send_email(email, response)
+
+            yield 'data: {"progress": 100}\n\n'  # Email sent
             yield f'data: {{"summary": {json.dumps(response)}}}\n\n'
 
         os.remove(filepath)
