@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import PodcastSummary from './PodcastSummary';
+import PodcastSummary from './components/PodcastSummary';
 
 function App() {
   const [audioFile, setAudioFile] = useState(null);
